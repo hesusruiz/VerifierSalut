@@ -112,47 +112,42 @@ export class DisplayHcert extends AbstractPage {
                     </div>
                 </section>
                 
-                <!-- <button @click=${() => this.toggleView("#expandableSection")} class="w3-btn w3-block w3-black w3-left-align">Details</button> -->
+                <section class="section">
+                    <div class="subsection">
+                        <div class="etiqueta mt-3">Disease targeted</div>
+                        <div class="valor mt-3">${payload.diseaseTargeted}</div>
+                    </div>
+                </section>
+
+                <section class="section">
             
-                <!-- <div id="expandableSection" class="w3-hide"> -->
-
-                    <section class="section">
-                        <div class="subsection">
-                            <div class="etiqueta mt-3">Disease targeted</div>
-                            <div class="valor mt-3">${payload.diseaseTargeted}</div>
-                        </div>
-                    </section>
-
-                    <section class="section">
-                
-                        <div class="subsection">
-                            <div class="etiqueta mt-3">Vaccine/profilaxis targeted</div>
-                            <div class="valor mb-3">${payload.vaccineProphylaxis}</div>
-                        </div>
-                
-                        <div class="subsection">
-                            <div class="etiqueta">Vaccine medicinal product</div>
-                            <div class="valor mb-3">${payload.medicinalProduct}</div>
-                        </div>
-                
-                        <div class="subsection">
-                            <div class="etiqueta">Manufacturer</div>
-                            <div class="valor">${payload.manufacturer}</div>            
-                        </div>
-                
-                    </section>
-                    <section class="section">
-                        <div class="subsection">
-                            <div class="etiqueta">Certificate identifier</div>
-                            <div class="valor text-break">${payload.uniqueIdentifier}</div>
-                        </div>
-                        <div class="subsection">
-                            <div class="etiqueta">Certificate issuer</div>
-                            <div class="valor">${payload.certificateIssuer}</div>                
-                        </div>
-                    </section>
+                    <div class="subsection">
+                        <div class="etiqueta mt-3">Vaccine/profilaxis targeted</div>
+                        <div class="valor mb-3">${payload.vaccineProphylaxis}</div>
+                    </div>
+            
+                    <div class="subsection">
+                        <div class="etiqueta">Vaccine medicinal product</div>
+                        <div class="valor mb-3">${payload.medicinalProduct}</div>
+                    </div>
+            
+                    <div class="subsection">
+                        <div class="etiqueta">Manufacturer</div>
+                        <div class="valor">${payload.manufacturer}</div>            
+                    </div>
+            
+                </section>
+                <section class="section">
+                    <div class="subsection">
+                        <div class="etiqueta">Certificate identifier</div>
+                        <div class="valor" style="word-break: break-all;">${payload.uniqueIdentifier}</div>
+                    </div>
+                    <div class="subsection">
+                        <div class="etiqueta">Certificate issuer</div>
+                        <div class="valor">${payload.certificateIssuer}</div>                
+                    </div>
+                </section>
                                 
-                <!-- </div> -->
             </div>
             `;
     }
