@@ -1,4 +1,4 @@
-# GreenCreds
+# VerifierGene
 
-https://hesusruiz.github.io/GreenCreds/
+https://hesusruiz.github.io/VerifierGene/
 
