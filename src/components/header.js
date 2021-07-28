@@ -29,7 +29,7 @@ export function HeaderBar() {
     <div class="w3-bar w3-xlarge color-primary">
 
         <div class="w3-bar-item" @click=${goHome}>
-            <img src="mevasalut.svg" height="35px" alt="Logo" />
+            <img src="mevasalut.svg" height="35px" style="vertical-align:inherit" alt="Logo" />
             <span style="padding-left: 10px;">EU Certificates</span>
         </div>
         <a href="#" class="w3-bar-item w3-button w3-hide-small">Link 1</a>
