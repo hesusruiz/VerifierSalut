@@ -14,7 +14,7 @@ import { Spinner } from "./pages/spinner";
 import { displayNormalQR } from "./pages/displayNormalQR";
 
 // The home page to start and when refreshing
-var homePage = "intro"
+var homePage = "verifier"
 
 var pageDefs = [
     {

@@ -10,7 +10,7 @@ import {SWNotify} from "./pages/swnotify.js";
 import {Intro} from "./pages/intro.js";
 import {Spinner} from "./pages/spinner.js";
 import {displayNormalQR} from "./pages/displayNormalQR.js";
-var homePage = "intro";
+var homePage = "verifier";
 var pageDefs = [
   {
     name: "intro",
