@@ -219,7 +219,7 @@ export class DisplayHcert extends AbstractPage {
                 <div class="section">
                     <div class="subsection">
                         <div class="etiqueta mt-3">Certificate identifier</div>
-                        <div class="valor text-break">${payload.uniqueIdentifier}</div>
+                        <div class="valor" style="word-break: break-all;">${payload.uniqueIdentifier}</div>
                     </div>
                     <div class="subsection">
                         <div class="etiqueta">Certificate issuer</div>
@@ -237,66 +237,62 @@ export class DisplayHcert extends AbstractPage {
     }
     if (payload["certType"] == "r") {
       thehtml = html`
-            <div class="container mb-2 border bg-light">
-                <div class="hcert title">EU DIGITAL COVID CERTIFICATE</div>
-                <div class="hcert subtitle">Recovery</div>
-            </div>
-            
-            <div class="container mb-2 border">
-                <div class="mb-2">
-                    <div class="etiqueta mt-3">Name</div>
-                    <div class="valor mb-3">${payload.fullName}</div>
+
+            <section class="section">
+                <div class="subsection">
+                    <!-- <img width="60px" src=${eulogo} alt="EUlogo"> -->
+                    <h3 class="w3-center">EU COVID CERTIFICATE</h3>
                 </div>
-                <div>
-                    <div class="etiqueta">Date of birth</div>
-                    <div class="valor">${payload.dateOfBirth}</div>
+                <div class="subsection">
+                    <h4 class="w3-center"><b>Recovery</b></h4>
                 </div>
-            </div>
-            
+            </section>
+
+            ${msg}
+
             <div class="container">
-                <div class="hcert subtitle">Recovery details</div>
-            </div>
-            
-            <div class="container mb-2 border">
-                <div class="row">
-                    <div class="col">
-                        <div class="etiqueta mt-3">Disease targeted</div>
+                <div class="section">
+                    <div class="subsection">
+                        <div class="etiqueta">Name</div>
+                        <div class="valor">${payload.fullName}</div>
                     </div>
-                    <div class="col">
-                        <div class="valor mt-3">${payload.diseaseTargeted}</div>
+                    <div class="subsection">
+                        <div class="etiqueta">Date of birth</div>
+                        <div class="valor">${payload.dateOfBirth}</div>
                     </div>
                 </div>
-            </div>
+           
+                <div class="section">
             
-            
-            <div class="container border">
-            
-                <div class="row mb-3">
-            
-                    <div class="col-sm">
-                        <div class="etiqueta mt-3">Date of positive</div>
-                        <div class="valor mb-3">${payload.datePositive}</div>
+                    <div class="subsection">
+                        <div class="etiqueta">Date of positive</div>
+                        <div class="valor">${payload.datePositive}</div>
                     </div>
             
-                    <div class="col-sm">
-                        <div class="etiqueta mt-3">Valid from</div>
-                        <div class="valor mb-3">${payload.dateFrom}</div>
+                    <div class="subsection">
+                        <div class="etiqueta">Valid from</div>
+                        <div class="valor">${payload.dateFrom}</div>
                     </div>
             
-                    <div class="col-sm">
+                    <div class="subsection">
                         <div class="etiqueta mt-3">Valid to</div>
                         <div class="valor">${payload.dateUntil}</div>
                     </div>
             
                 </div>
             
-            </div>
-            
-            <div class="container mb-2 border">
-                <div class="row">
-                    <div class="col">
-                        <div class="etiqueta mt-3">Certificate identifier</div>
-                        <div class="etiqueta mb-3 text-break"><strong>${payload.uniqueIdentifier}</strong></div>
+                <div class="section">
+                    <div class="subsection">
+                        <div class="etiqueta mt-3">Disease targeted</div>
+                        <div class="valor mt-3">${payload.diseaseTargeted}</div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="section">
+                    <div class="subsection">
+                        <div class="etiqueta">Certificate identifier</div>
+                        <div class="valor" style="word-break: break-all;"><strong>${payload.uniqueIdentifier}</strong></div>
             
                         <div class="etiqueta">Certificate issuer</div>
                         <div class="valor">${payload.certificateIssuer}</div>
