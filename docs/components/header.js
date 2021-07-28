@@ -23,21 +23,18 @@ export function HeaderBar() {
   }
   let theHtml = html`
     <div class="w3-bar w3-xlarge color-primary">
-
         <div class="w3-bar-item" @click=${goHome}>
             <img src="mevasalut.svg" height="35px" style="vertical-align:inherit" alt="Logo" />
             <span style="padding-left: 10px;">EU Certificates</span>
         </div>
-        <a href="#" class="w3-bar-item w3-button w3-hide-small">Link 1</a>
-        <a href="#" class="w3-bar-item w3-button  w3-hide-small">Link 2</a>
-        <a href="#" class="w3-bar-item w3-button w3-hide-small">Link 3</a>
+        <a @click=${() => gotoPage("spinner")} href="javascript:void(0)" class="w3-bar-item w3-button w3-hide-small">Update public keys</a>
+        <a href="#" class="w3-bar-item w3-button w3-hide-small">Privacy policy</a>
         <a href="javascript:void(0)" class="w3-bar-item w3-button hover-color-primary w3-right w3-hide-large w3-hide-medium" @click=${toggleMenu}>&#9776;</a>
     </div>
     
     <div class="w3-bar-block color-primary w3-hide w3-hide-large w3-hide-medium">
         <a @click=${() => gotoPage("spinner")} href="javascript:void(0)" class="w3-bar-item w3-button hover-color-primary">Update public keys</a>
         <a href="#" class="w3-bar-item w3-button hover-color-primary">Privacy policy</a>
-        <a href="#" class="w3-bar-item w3-button hover-color-primary">Help</a>
     </div>
     `;
   render(theHtml, domElem);
