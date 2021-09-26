@@ -317,7 +317,7 @@ import ukRawKeys from "./json/uk_jwk_keys.json"
 var eu_trusted_keys = eu_jwk_keys
 
 export async function refreshTrustedKeys() {
-    let response = await fetch("/eu_jwk_keys.json")
+    let response = await fetch("./eu_jwk_keys.json")
     if (!response.ok) {
         log.myerror("fetch for TL failed");
         return;
