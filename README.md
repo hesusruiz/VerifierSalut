@@ -1,4 +1,4 @@
-# VerifierGene
+# VerifierSalut
 
-https://hesusruiz.github.io/VerifierGene/
+https://hesusruiz.github.io/VerifierSalut
 
