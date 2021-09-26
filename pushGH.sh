@@ -8,4 +8,6 @@ git commit -m 'deploy'
 
 echo Pushing to Github repository
 git push -u origin main
-#git push git@github.com:hesusruiz/EvidenceLedgerVerifier.git
+
+#echo Updating SafeIsland server
+ssh safeisland "cd VerifierSalut; git pull"
