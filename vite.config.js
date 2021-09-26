@@ -5,6 +5,7 @@ export default {
       minify: "esbuild",
       outDir: "../docs",
       emptyOutDir: true,
+      assetsDir: "pieces",
       assetsInlineLimit: 7000
   }
 }
