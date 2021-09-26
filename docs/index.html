@@ -1,29 +1,52 @@
-<!DOCTYPE html><html lang="en"><head>
-    <meta charset="utf-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1">
-    <meta name="description" content="Verifiable Credentials with Strong Privacy">
-    <title>Private Credentials</title>
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    
+    
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="description" content="Verifier for EU COVID Certificates with strong privacy" />
+    <meta name="theme-color" content="#8ebcf9">
+    <title>Verify Your Vaccination Certificate</title>
+    <meta name="copyright" content="Evidence Ledger">
+    <meta name="description"
+        content="The free online tool for verifying your (or anyone else&#039;s) COVID vaccination certificate. Save time and check the certificate in seconds."
+    >
+    <meta itemprop="name" content="Verify Your Vaccination Certificate Online">
+    <meta itemprop="description"
+        content="The free online tool for verifying your (or anyone else&#039;s) COVID vaccination certificate. Save time and check the certificate in seconds."
+    >
+    <!-- Facebook Meta Tags -->
+    <meta property="og:type" content="website">
+    <meta property="og:title" content="Verify Your Vaccination Certificate Online">
+    <meta property="og:description"
+        content="The free online tool for verifying your (or anyone else&#039;s) COVID vaccination certificate. Save time and check the certificate in seconds.">
+    <link rel="manifest" href="./manifest.webmanifest">
 
-    <script>
-        var runmode = "production"
-    </script>
-    <link rel="manifest" href="./manifest.json">
-    <link rel="stylesheet" href="css/w3full.css">
+    
 
-    <link rel="icon" type="image/svg+xml" href="./favicon.svg">
-    <meta name="mobile-web-app-capable" content="yes">
-    <meta name="apple-mobile-web-app-capable" content="yes">
-    <meta name="apple-mobile-web-app-status-bar-style" content="black">
-    <meta name="apple-mobile-web-app-title" content="SafeIsland">
-    <link rel="apple-touch-icon" href="img/icon-152.png">
+    <link rel="icon" type="image/png" href="data:null;base64,AAABAAEAEBAAAAEAIABoBAAAFgAAACgAAAAQAAAAIAAAAAEAIAAAAAAAAAQAABMLAAATCwAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA19fXAdfX1wCdnZ0AAAAAAAAAAAQAAAAJAAAABAAAAAAAAAAAAAAAAwAAAAgAAAABAAAAANjc3QDKyL4A3OLlA9jY2AX///8BAAAAIAAAAHcAAACxAAAAvwAAALMAAAB9AAAAIgAAACIAAACaAAAAHgAAAADY29sA6PX/AN7l6R3///8ACAgIMAAAAMwAAADaAAAAkQAAAHIAAACFAAAAywAAAM8AAAA8AAAArwAAAGYAAAAAAwMDAPD//wDd4+YMRkZGCAICAqYAAADTAAAAKwAAAAAAAAAAAAAAAAAAAB8AAADQAAAAngAAAGUAAACyAAAACgAAAADX19cA19fXBBUVFRkCAgLEAAAAdgAAAAAAAAAAAAAAAAAAAAAAAAADAAAArAAAAMEAAAAnAAAAxQAAAD0AAAAA19fXANfX1wRISEgHCgoKIwAAABEAAAAAAAAAAAAAAAEAAAANAAAAVAAAAOcAAACZAAAAAQAAAI4AAACNAAAAAP///wDX19cE1tbWAv///wEAAAAFAAAAKwAAAGEAAACYAAAAyQAAAO4AAAC6AAAAJwAAAAAAAAA+AAAAxQAAAB0AAAAA19fXBP///wESEhIVAAAAkQAAAOcAAADkAAAAwwAAAJAAAABPAAAAEQAAAAAAAAAAAAAACwAAALQAAABiAAAAANfX1wQAAAAAAwMDcwAAAPMAAACCAAAAJwAAAAoAAAAAAAAAAQAAAAgAAAAEAAAAAAAAAAAAAABoAAAArwYGBgn///8D////AgICAp0AAADPAAAAEAAAAAAAAAAAAAAAAAAAACYAAACxAAAAQgAAAAAAAAAAAAAAIQAAAMcBAQE4////AP///woCAgJ1AAAA5gAAADwAAAAAAAAAAAAAAAoAAACIAAAA6AAAADEAAAAAAAAAAAAAAAEAAACVAAAAiP///wPo7/QvERESGwAAALIAAADdAAAApAAAAJYAAADAAAAA6wAAAHkAAAADAAAAAAAAAAAAAAAAAAAARAAAAMUYGBgj3+brM/7//wUAAAATAAAAXwAAAJkAAACmAAAAjQAAAEYAAAAGAAAAAAAAAAAAAAAAAAAAAAAAAA0AAACADg4OOtvf4gHa3uEA2t7hAAAAAAAAAAAAAAAAAQAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAARwcHAIAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA//8AADCMAAAADgAAAA4AAA4EAAAeBAAAGAQAAAAiAAAAYgAAgDAAAA4wAAAMMAAAADgAAAB4AAAx+AAA//8AAA==" />
+    <meta name="mobile-web-app-capable" content="yes" />
+    <meta name="apple-mobile-web-app-capable" content="yes" />
+    <meta name="apple-mobile-web-app-status-bar-style" content="black" />
+    <meta name="apple-mobile-web-app-title" content="Verify Your Vaccination Certificate Online" />
+    <link rel="apple-touch-icon" href="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAJgAAACYCAMAAAAvHNATAAABRFBMVEWOvPmx0fv////H3vyVwPmjyfq51fvA2fzN4vzc6v3j7v3q8v7x9/74+//U5v2qzfucxPrN4fzA2vyPvfnG3fz+/v/q8/6Qvfmkyfqdxfqy0fuWwPmiyPra6f2Ywvqw0Pv8/f+Zwvrw9v7b6v3p8v7i7v2rzfv3+/+/2fzj7v6jyPr9/v+tz/vO4vzF3fy00vvg7f3B2vzV5v2y0vuWwfm51vu41fu+2fymyvrb6f2qzfqexfr3+v+lyfrU5f3I3vypzPq31PvT5f3Z6f3u9f6x0PuXwvmlyvr1+f72+f/c6/3o8f7h7f3M4fy61vuexvrv9v6z0vugx/rC2/zI3/zd6/2RvvmszvuSvvn7/f+71/vr8/72+v/0+f600/vv9f7k7/7S5P2tzvvL4PzZ6P3P4vzt9P7n8f6+2PzW5/2XwfkAAADf2N3rAAAAbHRSTlP//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////wCWU1lUAAAB9UlEQVR4nO2YQU7DMBBFq9lmwQF8Ay6AlJ134QDZILEy9z8DpYXaY48dR8SKBO+tcOZ78uK4Ce3lAgAAAAAAAAAAAAAAAAAAAAD/BbmSDFe5EU7zeZB6iaK/QW90D++xreScKhbbFl6dJzw6F+PKa70NwvfInSb2SBcr1L1kw8SeokfRqKfVELHwE341pp0ppu+kVX05TSzOMsW2e40Qk91itxdDKFIDxEJDzHs/+zic7CdcMjI/QI/2Ox6OuuXGDNG49PjBYlnL9hTJGSumrrs16V6+3/hVZY8Xm9PQujHtqzRpzR1iZrGKTrYvKj86WiwdOr2F1sZFjBUrg16rycdpYpN1sGufDhRbqrl5W23k5m/n5paZrgwQ2wzkvYKkjBHriWkzyTlPLN1K6Rs8DNz8s061NlP86/oAceWEY8WkFPNlymkxe/7hYnmD2pKZ9VFia5+Y+6VY8eHZFJPsXXh7DpTfbiUVKyqDxCoKfWIySKzMiGWWfShjwTXEiv+kdorNloT+/iM1sUUqYouKyW4xX71t0VhUW59LJrX85EkslLWmnV0Vi0pxSsqNmF1ritV8s/NXii5dG3Wu7KrM2s4Fsy64UovDsl1MrbVaS+ytWpwbs58XvYaVn/XcJEvPL34AAAAAAAAAAAAAAAAAAAAA8Af5BGqfG6CSvRRuAAAAAElFTkSuQmCC" />
 
-    <script type="module" src="./app.js"></script>
-</head>
+  <script type="module" crossorigin src="/assets/index.0d58eee9.js"></script>
+    <link rel="stylesheet" href="/assets/index.36348ee6.css">
+  </head>
+
 <body>
-    <div class="loaderpage">
-        <h2>Loading application</h2>
-        <p>Please wait...</p>
-        <div class="loader"></div>
-    </div>
 
-</body></html>
+<header>
+</header>
+
+<main>
+</main>
+
+<footer>
+</footer>
+
+</body>
+
+</html>

@@ -3,9 +3,9 @@ import { html } from 'lit-html';
 
 export class Page404 extends AbstractPage {
 
-    constructor(domElem) {
+    constructor(id) {
         console.log("PAGE404: inside constructor")
-        super(domElem)
+        super(id)
     }
 
     enter() {

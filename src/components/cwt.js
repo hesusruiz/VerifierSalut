@@ -1,107 +1,5 @@
-import { settingsGet, settingsPut } from "../db";
 import { inflate } from "pako";
 import { log } from "../log";
-
-import trustedPublicKeys from "../json/all_jwk_keys.json"
-import prePublicKeys from "../json/pre_jwk_keys.json"
-import valueSets from "../json/value-sets.json"
-
-// https://covid-status.service.nhsx.nhs.uk/pubkeys/keys.json
-import ukRawKeys from "../json/uk_jwk_keys.json"
-
-
-export var trustedList = {
-    get: async function (kid) {
-
-        if (!kid) { log.myerror("kid is undefined"); return undefined; }
-
-        let entry = trustedPublicKeys[kid]
-        if (entry === undefined) { log.myerror(`kid ${kid} not found`); return undefined; }
-
-        let jwk = entry["jwk"]
-        if (jwk === undefined) { log.myerror(`JWK for kid ${kid} not found`); return undefined; }
-
-        return jwk;
-    },
-}
-
-function inUKList(kid) {
-    for (let i = 0; i < ukRawKeys.length; i++) {
-        if (ukRawKeys[i].kid == kid) {
-            return ukRawKeys[i].publicKey
-        }
-    }
-    return undefined
-}
-
-
-async function getTrustedKey(kid) {
-    if (!kid) { log.myerror("kid is undefined"); return undefined; }
-
-    // First try to get it from the PRODUCTION EU list
-    let entry = trustedPublicKeys[kid]
-    if (entry) {
-        console.log(`kid "${kid}" found in EU_PRO trusted list`)
-        return {
-            kid: kid,
-            publicKey: entry.jwk,
-            list: "EU_PRO",
-            format: "jwk"
-        }
-    }
-    log.mywarn(`kid "${kid}" not found in EU_PRO trusted list`)
-
-    // Now check in the PRODUCTION listfrom the UK
-    for (let i = 0; i < ukRawKeys.length; i++) {
-        if (ukRawKeys[i].kid == kid) {
-            console.log(`kid "${kid}" found in UK_PRO trusted list`)
-            return {
-                kid: kid,
-                publicKey: ukRawKeys[i].publicKey,
-                list: "UK_PRO",
-                format: "spki"
-            }
-        }
-    }
-    log.mywarn(`kid "${kid}" not found in UK_PRO trusted list`)
-
-    // And finally in the PREPRODUCTION EU list
-    if (prePublicKeys.includes(kid)) {
-        log.mywarn(`kid "${kid}" found in EU PREPRODUCTION trusted list`)
-        return {
-            kid: kid,
-            publicKey: undefined,
-            list: "EU_PREPRODUCTION",
-            format: undefined
-        }
-    }
-    log.myerror(`KEY ${kid} not found in any Trusted List`)
-    return {
-        kid: kid,
-        publicKey: undefined,
-        list: undefined,
-        format: undefined
-    }
-
-}
-
-export var vs = {
-    get: function (key, valueSetName) {
-        if (!key) { return "N/A" }
-
-        let valueSet = valueSets[valueSetName];
-        if (!valueSet) { return key; }
-
-        let values = valueSet["valueSetValues"];
-        if (!values) { return key; }
-
-        let value = values[key];
-        if (!value) { return key; }
-
-        return value["display"];
-    },
-};
-
 
 //********************************
 // CRYPTO KEY SUPPORT
@@ -295,6 +193,8 @@ class DGCKey {
         }
 
         console.log("Inside VERIFY", key);
+        let algo = key.algorithm
+        console.log("Key algorithm", algo)
 
         let result
         try {
@@ -377,21 +277,6 @@ function uint(bytes) {
     for (let j = 1; j < i; j = j + 1) {
         value = value * 256;
         value = value + bytes[j];
-    }
-
-    return value;
-}
-
-function bigint(bytes) {
-    // Convert a byte array of 8 bytes to an BigInteger
-    // The byte array is in network byte order
-
-    var value = BigInt(bytes[0]);
-    var i = bytes.length;
-
-    for (let j = 1; j < i; j = j + 1) {
-        value = value * 256n;
-        value = value + BigInt(bytes[j]);
     }
 
     return value;
@@ -677,7 +562,6 @@ CWT_ALG_TO_JWT.set(-37, "RSA");
 export class CWT {
     static POW_2_24 = 5.960464477539063e-8
     static POW_2_32 = 4294967296
-//    static POW_2_53 = 9007199254740992n
     static POW_2_53 = Number.MAX_SAFE_INTEGER
 
     static encode(value) {
@@ -824,7 +708,7 @@ export class CWT {
                         writeTypeAndLength(MT_BYTES, value.length);
                         writeUint8Array(value);
                     } else if (value instanceof Map) {
-                        // Javascript Map, encoded as CBOR Map
+                        // Javascript Map, will be encoded as CBOR Map
                         length = value.size;
                         writeTypeAndLength(MT_MAP, length);
                         for (let [key, val] of value) {
@@ -832,7 +716,7 @@ export class CWT {
                             encodeItem(val);
                         }
                     } else {
-                        // Assume we have a "normal" object, encoded as a CBOR Map
+                        // Assume we have a "normal" object, will be encoded as a CBOR Map
                         var keys = Object.keys(value);
                         length = keys.length;
                         writeTypeAndLength(MT_MAP, length);
@@ -853,8 +737,8 @@ export class CWT {
     }
 
     static async verifyCWT(_cwt, verificationKey) {
-        // Verify the CWT object using the key specified by the "verifier"
-        // The verifier should be a JWK object with the public key
+        // Verify the CWT object using the verificationKey
+        // The verificationKey should be a JWK object with the public key
         // The method is async because we call async crypto methods (SubtleCrypto)
 
         // Decode the object into an Array with 4 elements
@@ -868,8 +752,6 @@ export class CWT {
 
         // And CBOR-encode it
         let Sig_structure_encoded = CWT.encode(Sig_structure);
-
-        // Get the crypto algorithm to use, checking that is is supported
 
         // Verify the signature
         let verified = false;
@@ -1105,52 +987,6 @@ export class CWT {
     static async decodeCWT(data, verify) {
         var dataView = new DataView(data);
 
-        function decodeHeadersOld(protectedHeaders, unprotectedHeaders) {
-            const CWT_ALG = 1;
-            const CWT_KID = 4;
-
-            // Make a copy to perform decoding
-            protectedHeaders = protectedHeaders.slice();
-            let headers = CWT.decode(protectedHeaders.buffer);
-
-            let headersJWT = new Map();
-
-            // Translate from CWT headers to JWT headers
-            for (let [key, value] of headers) {
-                switch (key) {
-                    case CWT_ALG: {
-                        let alg = CWT_ALG_TO_JWT.get(value);
-                        if (alg == undefined) {
-                            throw `Undefined algorithm: ${value}`;
-                        }
-                        headersJWT.set("alg", alg);
-                        break;
-                    }
-                    case CWT_KID: {
-                        let kid = bytes2hexStr(value);
-                        headersJWT.set("kid", kid);
-                        break;
-                    }
-                    default:
-                        break;
-                }
-            }
-
-            for (let [key, value] of unprotectedHeaders) {
-                switch (key) {
-                    case CWT_KID: {
-                        let kid = bytes2hexStr(value);
-                        headersJWT.set("kid", kid);
-                        break;
-                    }
-                    default:
-                        break;
-                }
-            }
-
-            return headersJWT;
-        }
-
         function decodeHeaders(protectedHeaders, unprotectedHeaders) {
             // protectedHeaders: CBOR Map, that should be decoded
             // unprotectedHeaders: a javascript Map already decoded
@@ -1381,7 +1217,7 @@ export class CWT {
             }
 
             // Check for HCERT in payload
-            let hcert = decodedPayload.get(-260);
+            let hcert = decodedPayload.get(HCERT);
             if (hcert == undefined) {
                 throw "No hcert found";
             }
@@ -1435,28 +1271,31 @@ export class CWT {
             let kid = headers["kid"];
 
             let k = await getTrustedKey(kid)
+            if (k !== undefined) {
 
-            if (k.list === "EU_PRO") {
+                if (k.list === "EU_PRO") {
 
-                // Create the native public key
-                console.log(k)
-                let verificationKey = await DGCKey.fromJWK(k.publicKey);
-
-                // Verify the CWT with the verification key
-                verified = await CWT.verifyCWT(data, verificationKey);
-
-            } else if (k.list === "UK_PRO") {
-
-                // Create the native public key
-                let verificationKey = await DGCKey.fromSPKI(k.publicKey)
-
-                // Verify the CWT with the verification key
-                verified = await CWT.verifyCWT(data, verificationKey);
-
-            } else if (k.list === "EU_PREPRODUCTION") {
-
-                // Signal that the list is in PRE
-                verified = "PRE"
+                    // Create the native public key
+                    console.log(k)
+                    let verificationKey = await DGCKey.fromJWK(k.publicKey);
+    
+                    // Verify the CWT with the verification key
+                    verified = await CWT.verifyCWT(data, verificationKey);
+    
+                } else if (k.list === "UK_PRO") {
+    
+                    // Create the native public key
+                    let verificationKey = await DGCKey.fromSPKI(k.publicKey)
+    
+                    // Verify the CWT with the verification key
+                    verified = await CWT.verifyCWT(data, verificationKey);
+    
+                } else if (k.list === "EU_PREPRODUCTION") {
+    
+                    // Signal that the list is in PRE
+                    verified = "PRE"
+                }
+    
             }
 
         }
@@ -1468,9 +1307,9 @@ export class CWT {
         return [headers, payload, signature, verified];
     }
 
-
+    // Decodes a HC1 QR and optionally verifies the signature
     static async decodeHC1QR(data, verify = false) {
-        // data: string obtained from a QR scan
+        // data: string obtained for example from a QR scan
 
         // Check if the string is a HC1 certificate
         if (!data.startsWith("HC1:")) {
@@ -1598,242 +1437,4 @@ export class HCERT {
         return html;
     }
 
-    static renderDetail(cred) {
-
-        // The credential
-        let payload = cred[1];
-
-        let html = "Unrecognized";
-
-        if (payload["certType"] == "v") {
-            html = `
-            <div class="container mb-2 border bg-light">
-                <div class="hcert title">EU DIGITAL COVID CERTIFICATE</div>
-                <div class="hcert subtitle">Vaccination</div>
-            </div>
-
-            <div class="container mb-2 border">
-                <div class="mb-2">
-                    <div class="etiqueta mt-3">Name</div>
-                    <div class="valor mb-3">${payload.fullName}</div>
-                </div>
-                <div>
-                    <div class="etiqueta">Date of birth</div>
-                    <div class="valor">${payload.dateOfBirth}</div>
-                </div>
-            </div>
-
-            <div class="container">
-                <div class="hcert subtitle">Vaccination details</div>
-            </div>
-
-            <div class="container mb-2 border">
-                <div class="row">
-                    <div class="col">
-                        <div class="etiqueta mt-3">Certificate identifier</div>
-                        <div class="etiqueta mb-3 text-break"><strong>${payload.uniqueIdentifier}</strong></div>
-
-                        <div class="etiqueta">Certificate issuer</div>
-                        <div class="valor">${payload.certificateIssuer}</div>
-                    </div>
-
-                </div>
-            </div>
-
-            <div class="container mb-2 border">
-                <div class="row">
-                    <div class="col">
-                        <div class="etiqueta mt-3">Disease targeted</div>
-                    </div>
-                    <div class="col">
-                        <div class="valor mt-3">${payload.diseaseTargeted}</div>
-                    </div>
-                </div>
-            </div>
-
-            <div class="container border">
-
-                <div class="row mb-3">
-
-                    <div class="col-sm">
-                        <div class="etiqueta mt-3">Vaccine/profilaxis targeted</div>
-                        <div class="valor mb-3">${payload.vaccineProphylaxis}</div>
-
-                        <div class="etiqueta">Vaccine medicinal product</div>
-                        <div class="valor mb-3">${payload.medicinalProduct}</div>
-
-                        <div class="etiqueta">Manufacturer</div>
-                        <div class="valor">${payload.manufacturer}</div>
-
-                    </div>
-
-                    <div class="col-sm">
-                        <div class="etiqueta mt-3">Dose number/Total doses</div>
-                        <div class="valor mb-3">${payload.doseNumber}/${payload.doseTotal}</div>
-
-                        <div class="etiqueta">Date of vaccination</div>
-                        <div class="valor mb-3">${payload.dateVaccination}</div>
-
-                        <div class="etiqueta">Member State of vaccination</div>
-                        <div class="valor">${payload.country}</div>
-                    </div>
-                </div>
-
-            </div>
-            `;
-        }
-
-        if (payload["certType"] == "t") {
-            html = `
-            <div class="container mb-2 border bg-light">
-                <div class="hcert title">EU DIGITAL COVID CERTIFICATE</div>
-                <div class="hcert subtitle">Test</div>
-            </div>
-
-            <div class="container mb-2 border">
-                <div class="mb-2">
-                    <div class="etiqueta mt-3">Name</div>
-                    <div class="valor mb-3">${payload.fullName}</div>
-                </div>
-                <div>
-                    <div class="etiqueta">Date of birth</div>
-                    <div class="valor">${payload.dateOfBirth}</div>
-                </div>
-            </div>
-
-            <div class="container">
-                <div class="hcert subtitle">Test details</div>
-            </div>
-
-            <div class="container mb-2 border">
-                <div class="row">
-                    <div class="col">
-                        <div class="etiqueta mt-3">Certificate identifier</div>
-                        <div class="etiqueta mb-3 text-break"><strong>${payload.uniqueIdentifier}</strong></div>
-
-                        <div class="etiqueta">Certificate issuer</div>
-                        <div class="valor">${payload.certificateIssuer}</div>        
-                    </div>
-
-                </div>
-            </div>
-
-            <div class="container mb-2 border">
-                <div class="row">
-                    <div class="col">
-                        <div class="etiqueta mt-3">Disease targeted</div>
-                    </div>
-                    <div class="col">
-                        <div class="valor mt-3">${payload.diseaseTargeted}</div>
-                    </div>
-                </div>
-            </div>
-
-            <div class="container border">
-
-                <div class="row mb-3">
-
-                    <div class="col-sm">
-                        <div class="etiqueta mt-3">Test Name</div>
-                        <div class="valor mb-3">${payload.typeTest}</div>
-
-                        <div class="etiqueta">Manufacturer</div>
-                        <div class="valor">${payload.manufacturer}</div>
-
-                    </div>
-
-                    <div class="col-sm">
-                        <div class="etiqueta mt-3">Test Result</div>
-                        <div class="valor mb-3">${payload.testResult}</div>
-
-                        <div class="etiqueta">Date/Time of Sample Collection</div>
-                        <div class="valor mb-3">${payload.timeSample}</div>
-
-                        <div class="etiqueta">Testing Centre</div>
-                        <div class="valor">${payload.testingCentre}</div>
-                    </div>
-                </div>
-
-            </div>
-            `;
-        }
-
-        if (payload["certType"] == "r") {
-            html = `
-            <div class="container mb-2 border bg-light">
-                <div class="hcert title">EU DIGITAL COVID CERTIFICATE</div>
-                <div class="hcert subtitle">Recovery</div>
-            </div>
-            
-            <div class="container mb-2 border">
-                <div class="mb-2">
-                    <div class="etiqueta mt-3">Name</div>
-                    <div class="valor mb-3">${payload.fullName}</div>
-                </div>
-                <div>
-                    <div class="etiqueta">Date of birth</div>
-                    <div class="valor">${payload.dateOfBirth}</div>
-                </div>
-            </div>
-            
-            <div class="container">
-                <div class="hcert subtitle">Recovery details</div>
-            </div>
-            
-            <div class="container mb-2 border">
-                <div class="row">
-                  <div class="col">
-                    <div class="etiqueta mt-3">Disease targeted</div>
-                  </div>
-                  <div class="col">
-                    <div class="valor mt-3">${payload.diseaseTargeted}</div>
-                  </div>
-                </div>
-            </div>
-            
-            
-            <div class="container border">
-            
-                <div class="row mb-3">
-            
-                    <div class="col-sm">
-                        <div class="etiqueta mt-3">Date of positive</div>
-                        <div class="valor mb-3">${payload.datePositive}</div>
-                    </div>            
-            
-                    <div class="col-sm">
-                        <div class="etiqueta mt-3">Valid from</div>
-                        <div class="valor mb-3">${payload.dateFrom}</div>
-                    </div>
-            
-                    <div class="col-sm">
-                        <div class="etiqueta mt-3">Valid to</div>
-                        <div class="valor">${payload.dateUntil}</div>
-                    </div>
-            
-                </div>
-            
-            </div>
-            
-            <div class="container mb-2 border">
-                <div class="row">
-                    <div class="col">
-                        <div class="etiqueta mt-3">Certificate identifier</div>
-                        <div class="etiqueta mb-3 text-break"><strong>${payload.uniqueIdentifier}</strong></div>
-            
-                        <div class="etiqueta">Certificate issuer</div>
-                        <div class="valor">${payload.certificateIssuer}</div>        
-            
-                        <div class="etiqueta">Country of Test</div>
-                        <div class="valor">${payload.country}</div>        
-            
-                    </div>
-            
-                </div>
-            </div>
-            `;
-        }
-
-        return html;
-    }
 }
