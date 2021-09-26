@@ -4,8 +4,9 @@
   "scripts": {
     "workbox": "workbox generateSW workbox-config.js",
     "dev": "vite",
-    "build": "vite build && workbox generateSW workbox-config.js",
-    "serve": "vite preview"
+    "build": "vite build && npm run workbox",
+    "serve": "vite preview",
+    "deploygh": "npm run build && bash pushGH.sh"
   },
   "devDependencies": {
     "vite": "^2.5.4",
