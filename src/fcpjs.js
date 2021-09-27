@@ -146,12 +146,6 @@ window.T = T
 
 import logo from "./logo.png"
 
-import shield from "./img/shield.png"
-import cloud from "./img/cloud.png"
-import freeofcookie from "./img/freeofcookie.png"
-import v_hand from "./img/v_hand.png"
-import fight_covid from "./img/fight_covid.png"
-
 function toggleMenu() {
     let x = document.getElementById("mobileMenu")
     x.classList.toggle("show")
@@ -184,8 +178,6 @@ function initialHeader() {
     <div class="w3-bar-block xlarge color-primary hide" id="mobileMenu">
         <a onclick='reloadPublickeys()' href="javascript:void(0)" class="w3-bar-item w3-large btn-menu">${T("Update public keys")}</a>
         <a onclick='gotoPage("selectLanguage")' href="javascript:void(0)" class="w3-bar-item w3-large btn-menu">${T("Language")}</a>
-        <a href="#" class="w3-bar-item w3-large btn-menu">${T("Privacy policy")}</a>
-        <a href="#" class="w3-bar-item w3-large btn-menu">${T("Terms & Conditions")}</a>
     </div>
     `
     document.querySelector('header').innerHTML = initialHeader
