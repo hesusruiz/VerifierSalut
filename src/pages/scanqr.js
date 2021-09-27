@@ -2,7 +2,8 @@
 var gotoPage = window.gotoPage
 import { html } from 'lit-html';
 import {log} from '../log'
-import { BrowserMultiFormatReader, NotFoundException } from '@zxing/library';
+import { BrowserMultiFormatReader, NotFoundException, DecodeHintType, BarcodeFormat } from '@zxing/library';
+import { BrowserQRCodeReader } from "@zxing/browser";
 import { AbstractPage } from './abstractpage'
 
 
@@ -13,7 +14,11 @@ export class ScanQrPage extends AbstractPage {
         super(id);
 
         // Initialize the QR library
-        this.codeReader = new BrowserMultiFormatReader()
+//        this.codeReader = new BrowserMultiFormatReader()
+        const formats = [BarcodeFormat.QR_CODE]
+        const hints = new Map()
+        hints.set(DecodeHintType.POSSIBLE_FORMATS, formats)
+        this.codeReader = new BrowserQRCodeReader(hints)
 
         // Create the 'video' element and attach the event handler
         this.videoElem = document.createElement("video")
@@ -30,20 +35,20 @@ export class ScanQrPage extends AbstractPage {
 
         // Call the QR decoder using the video element just created
         // The decoder will choose the appropriate camera
-        this.codeReader.decodeFromVideoDevice(null, this.videoElem, (result, err) => {
+        this.controls = await this.codeReader.decodeFromVideoDevice(null, this.videoElem, (result, err, controls) => {
             if (result) {
                 // Successful decode
                 console.log("RESULT", result)
                 // Reset the decoder to stop the video
-                this.codeReader.reset()
+                controls.stop()
                 // And process the scanned QR code
                 processQRpiece(result)
-
             }
             if (err && !(err instanceof NotFoundException)) {
                 console.error(err)
             }
-        })
+
+        });
 
     }
 
@@ -54,7 +59,9 @@ export class ScanQrPage extends AbstractPage {
     
     async exit() {
         // Reset the decoder just in case the camera was still working
-        this.codeReader.reset()
+        if (this.controls !== undefined) {
+            this.controls.stop()
+        }
         this.videoElem.style.display = "none"
     }
 
