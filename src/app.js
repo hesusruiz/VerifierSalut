@@ -319,6 +319,7 @@ export async function refreshTrustedKeys() {
 }
 window.refreshTrustedKeys = refreshTrustedKeys
 
+
 async function getTrustedKey(kid) {
 
     let undefinedKey = {

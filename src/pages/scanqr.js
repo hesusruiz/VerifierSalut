@@ -15,7 +15,7 @@ export class ScanQrPage extends AbstractPage {
         const formats = [BarcodeFormat.QR_CODE]
         const hints = new Map()
         hints.set(DecodeHintType.POSSIBLE_FORMATS, formats)
-        this.codeReader = new BrowserQRCodeReader(hints)
+        this.codeReader = new BrowserQRCodeReader()
 
         // Create the 'video' element and attach the event handler
         this.videoElem = document.createElement("video")
