@@ -47,7 +47,7 @@ export var translations = {
     },
     "Language": {
         "es": "Idioma",
-        "ca": "Llengua",
+        "ca": "Idioma",
         "fr": "Langue",
         "de": "Sprache",
         "it": "Lingua"
