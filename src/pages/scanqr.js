@@ -28,6 +28,8 @@ export class ScanQrPage extends AbstractPage {
         // Prepare the screen, waiting for the video
         this.render(this.videoElem)
 
+        this.videoInputDevices = await this.codeReader.listVideoInputDevices()
+
         // Call the QR decoder using the video element just created
         // The decoder will choose the appropriate camera
         this.codeReader.decodeFromVideoDevice(null, this.videoElem, (result, err) => {
