@@ -75,6 +75,7 @@ export class SelectLanguage extends AbstractPage {
         window.preferredLanguage = l
         localStorage.setItem("preferredLanguage", l)
         window.history.back()
+        window.initialHeader();
     }
 }
 
