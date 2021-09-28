@@ -34,7 +34,7 @@ export class ScanQrPage extends AbstractPage {
 
         // Call the QR decoder using the video element just created
         // The decoder will choose the appropriate camera
-        this.codeReader.decodeFromVideoDevice(null, this.videoElem, (result, err) => {
+        this.codeReader.decodeFromVideoDevice(cameraID, this.videoElem, (result, err) => {
             if (result) {
                 // Successful decode
                 console.log("RESULT", result)
