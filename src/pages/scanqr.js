@@ -29,7 +29,7 @@ export class ScanQrPage extends AbstractPage {
         this.render(this.videoElem)
 
         let videoInputDevices = await this.codeReader.listVideoInputDevices()
-        let cameraID = videoInputDevices[videoInputDevices.length - 1]
+        let cameraID = videoInputDevices[videoInputDevices.length - 1].deviceId
 
 
         // Call the QR decoder using the video element just created
