@@ -22,19 +22,62 @@ export class ScanQrPage extends AbstractPage {
 
     }
 
+    async selectCamera() {
 
-    async enter() {
+        // Get the stream with the appropriate constraints
+        let stream = undefined
+        // Avoid audio input for privacy reasons
+        const constraints = { audio: true, video: { facingMode: "environment" } }
 
-        // Prepare the screen, waiting for the video
-        this.render(this.videoElem)
+
+        try {
+            stream = await navigator.mediaDevices.getUserMedia(constraints);
+        } catch(err) {
+            return undefined;
+        }
+        if (stream === undefined) {
+            return undefined;
+        }
+        let mediaStreamTracks = stream.getVideoTracks();
+        console.log(mediaStreamTracks)
+
 
         let videoInputDevices = await this.codeReader.listVideoInputDevices()
         let cameraID = videoInputDevices[videoInputDevices.length - 1].deviceId
 
+        return cameraID
+    }
+
+    async enter() {
+
+        if (!navigator.mediaDevices || !navigator.mediaDevices.enumerateDevices) {
+        console.log("enumerateDevices() not supported.");
+        return;
+        }
+
+        this.devices = await navigator.mediaDevices.enumerateDevices()
+        this.devices = this.devices.filter((device) => {
+            return device.kind === "videoinput";
+        });
+
+        let theHtml = html`
+            ${this.videoElem}
+            <ul>
+            ${this.devices.map((device) =>
+                html`<li>${device.kind}: ${device.label}</li>`
+            )}
+            </ul>
+        `;
+
+        // Prepare the screen, waiting for the video
+        this.render(theHtml)
+
+        // Select the most appropriate camera for scanning a QR, using some heuristics
+        this.cameraQR = await this.selectCamera()
 
         // Call the QR decoder using the video element just created
         // The decoder will choose the appropriate camera
-        this.codeReader.decodeFromVideoDevice(cameraID, this.videoElem, (result, err) => {
+        this.codeReader.decodeFromVideoDevice(this.cameraQR, this.videoElem, (result, err) => {
             if (result) {
                 // Successful decode
                 console.log("RESULT", result)
