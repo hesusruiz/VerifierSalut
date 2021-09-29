@@ -393,6 +393,137 @@ export var vs = {
 
 window.vs = vs
 
+
+// **************************************
+// Initialise the camera
+// **************************************
+
+const backCameraKeywords = [
+    "rear",
+    "back",
+    "rück",
+    "arrière",
+    "trasera",
+    "trás",
+    "traseira",
+    "posteriore",
+    "后面",
+    "後面",
+    "背面",
+    "后置",
+    "後置",
+    "背置",
+    "задней",
+    "الخلفية",
+    "후",
+    "arka",
+    "achterzijde",
+    "หลัง",
+    "baksidan",
+    "bagside",
+    "sau",
+    "bak",
+    "tylny",
+    "takakamera",
+    "belakang",
+    "אחורית",
+    "πίσω",
+    "spate",
+    "hátsó",
+    "zadní",
+    "darrere",
+    "zadná",
+    "задня",
+    "stražnja",
+    "belakang",
+    "बैक",
+];
+
+function isBackCameraLabel(label) {
+    const lowercaseLabel = label.toLowerCase();
+    return backCameraKeywords.some((keyword) => {
+        return lowercaseLabel.includes(keyword);
+    });
+}
+
+window.videoDevices = []
+window.frontCameras = []
+window.backCameras = []
+
+async function getVideoDevices() {
+
+    // Get the video devices
+    if (!navigator.mediaDevices || !navigator.mediaDevices.enumerateDevices) {
+        console.log("enumerateDevices() not supported.");
+        return;
+    }
+
+    let allDevices = await navigator.mediaDevices.enumerateDevices()
+    window.videoDevices = allDevices.filter((device) => {
+        return device.kind === "videoinput";
+    });
+
+    let stream = undefined;
+    // Check if they have labels. If they don't, it means we have to request permission from the user
+    if (window.videoDevices.length > 0) {
+        let allLabelsEmpty = window.videoDevices.every((device) => {return device.label === ""})
+        if (allLabelsEmpty) {
+            try {
+                stream = await navigator.mediaDevices.getUserMedia({
+                    video: true,
+                    audio: false,
+                });
+                // Try again to get the devices
+                allDevices = await navigator.mediaDevices.enumerateDevices()
+                window.videoDevices = allDevices.filter((device) => {
+                    return device.kind === "videoinput";
+                });
+            }
+            catch {
+                // Ignored
+            }
+            finally {
+                if (stream !== undefined) {
+                    stream.getVideoTracks().forEach((track) => {
+                        track.stop();
+                    });
+                }
+            }
+
+
+        }
+    }
+
+    window.frontCameras = window.videoDevices.filter((device) => {
+        return !isBackCameraLabel(device.label)
+    });
+    window.backCameras = window.videoDevices.filter((device) => {
+        return isBackCameraLabel(device.label)
+    });
+
+}
+
+async function getPreferredVideoDevice() {
+    await getVideoDevices()
+
+    if (window.backCameras.length > 0) {
+        return window.backCameras[window.backCameras.length - 1]
+    } else if (window.frontCameras.length > 0) {
+        return window.frontCameras[0]
+    } else {
+        return undefined
+    }
+
+}
+window.getPreferredVideoDevice = getPreferredVideoDevice
+
+// Request camera access permission when DOM is loaded
+document.addEventListener('DOMContentLoaded', (event) => {
+    console.log('DOM fully loaded and parsed');
+    getPreferredVideoDevice()
+});
+
+
 var INSTALL_SERVICE_WORKER = true
 
 // This function is called on first load and when a refresh is triggered in any page
