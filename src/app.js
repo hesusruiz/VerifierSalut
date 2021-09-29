@@ -522,9 +522,26 @@ async function getPreferredVideoDevice() {
 window.getPreferredVideoDevice = getPreferredVideoDevice
 
 // Request camera access permission when DOM is loaded
-document.addEventListener('DOMContentLoaded', (event) => {
+document.addEventListener('DOMContentLoaded', async (event) => {
     console.log('DOM fully loaded and parsed');
     getPreferredVideoDevice()
+
+    try {
+        // Get the version of the application
+        let response = await fetch("/VERSION.txt");
+        if (response.ok) {
+            let newVersion = await response.text()
+            console.log(`Application version ${newVersion}`)
+            if (newVersion) {
+                window.localStorage.setItem("VERSION", newVersion)
+            }    
+        } else {
+            console.log("ERROR getting version", response.status)
+        }
+    } catch (error) {
+        console.log("ERROR updating version", error)
+    }
+
 });
 
 
@@ -627,10 +644,14 @@ async function performAppUpgrade() {
     try {
         // Get the new version of the application
         let response = await fetch("/VERSION.txt");
-        let newVersion = await response.text()
-        console.log(`Upgrading application to version ${newVersion}`)
-        if (newVersion) {
-            window.localStorage.setItem("VERSION", newVersion)
+        if (response.ok) {
+            let newVersion = await response.text()
+            console.log(`Upgrading application to version ${newVersion}`)
+            if (newVersion) {
+                window.localStorage.setItem("VERSION", newVersion)
+            }    
+        } else {
+            console.log("ERROR updating version", response.status)
         }
     } catch (error) {
         console.log("ERROR updating version", error)
