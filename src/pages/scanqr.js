@@ -27,7 +27,7 @@ export class ScanQrPage extends AbstractPage {
         // Get the stream with the appropriate constraints
         let stream = undefined
         // Avoid audio input for privacy reasons
-        const constraints = { audio: true, video: { facingMode: "environment" } }
+        const constraints = { audio: false, video: { facingMode: "environment" } }
 
 
         try {
