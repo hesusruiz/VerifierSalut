@@ -1,4 +1,4 @@
-var yo=Object.defineProperty;var wo=(t,e,r)=>e in t?yo(t,e,{enumerable:!0,configurable:!0,writable:!0,value:r}):t[e]=r;var cr=(t,e,r)=>(wo(t,typeof e!="symbol"?e+"":e,r),r);import{l as zr}from"./index.df09d726.js";/**
+var yo=Object.defineProperty;var wo=(t,e,r)=>e in t?yo(t,e,{enumerable:!0,configurable:!0,writable:!0,value:r}):t[e]=r;var cr=(t,e,r)=>(wo(t,typeof e!="symbol"?e+"":e,r),r);import{l as zr}from"./index.22a09cde.js";/**
  * @license
  * Copyright 2017 Google LLC
  * SPDX-License-Identifier: BSD-3-Clause
@@ -126,7 +126,7 @@ var yo=Object.defineProperty;var wo=(t,e,r)=>e in t?yo(t,e,{enumerable:!0,config
             <ul>
             ${this.devices.map(r=>_e`<li>${r.kind}: ${r.label}</li>`)}
             </ul>
-        `;this.render(e),this.cameraQR=videoInputDevices[videoInputDevices.length-1].deviceId,this.codeReader.decodeFromVideoDevice(this.cameraQR,this.videoElem,(r,n)=>{r&&(console.log("RESULT",r),_o(r)===Vr&&(this.codeReader.reset(),Bu(r))),n&&!(n instanceof b)&&console.error(n)})}canPlay(e){e.target.style.display="block"}async exit(){this.codeReader.reset(),this.videoElem.style.display="none"}}const po=0,go=1,Mu=2,Vr=3;async function Bu(t){let e=t.text,r=_o(t);if(r!==Vr)return!1;if(r===po||r===go)return xo("displayNormalQR",e),!0;if(r===Vr)return xo("displayhcert",e),!0}function _o(t){let e=t.text;return console.log("detectQRtype:",e),e.startsWith||zr.myerror("detectQRtype: data is not string"),e.startsWith("https")?go:e.startsWith("multi|w3cvc|")?Mu:e.startsWith("HC1:")?Vr:po}var Fu=window.gotoPage;class Lu extends Be{constructor(e){console.log("SWNOTIFY: inside constructor");super(e)}enter(){console.log("SWNOTIFY: enter page");let e=_e`
+        `;this.render(e),this.cameraQR=this.devices[this.devices.length-1].deviceId,this.codeReader.decodeFromVideoDevice(this.cameraQR,this.videoElem,(r,n)=>{r&&(console.log("RESULT",r),_o(r)===Vr&&(this.codeReader.reset(),Bu(r))),n&&!(n instanceof b)&&console.error(n)})}canPlay(e){e.target.style.display="block"}async exit(){this.codeReader.reset(),this.videoElem.style.display="none"}}const po=0,go=1,Mu=2,Vr=3;async function Bu(t){let e=t.text,r=_o(t);if(r!==Vr)return!1;if(r===po||r===go)return xo("displayNormalQR",e),!0;if(r===Vr)return xo("displayhcert",e),!0}function _o(t){let e=t.text;return console.log("detectQRtype:",e),e.startsWith||zr.myerror("detectQRtype: data is not string"),e.startsWith("https")?go:e.startsWith("multi|w3cvc|")?Mu:e.startsWith("HC1:")?Vr:po}var Fu=window.gotoPage;class Lu extends Be{constructor(e){console.log("SWNOTIFY: inside constructor");super(e)}enter(){console.log("SWNOTIFY: enter page");let e=_e`
         <div class="container">
             <div class="w3-card-4 w3-center" style="margin-top:100px;">
         

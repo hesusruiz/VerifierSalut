@@ -47,7 +47,7 @@ export class ScanQrPage extends AbstractPage {
         this.render(theHtml)
 
         // Select the most appropriate camera for scanning a QR, using some heuristics
-        this.cameraQR = videoInputDevices[videoInputDevices.length - 1].deviceId
+        this.cameraQR = this.devices[this.devices.length - 1].deviceId
 
         // Call the QR decoder using the video element just created
         // The decoder will choose the appropriate camera
