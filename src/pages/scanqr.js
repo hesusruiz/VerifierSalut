@@ -38,10 +38,13 @@ export class ScanQrPage extends AbstractPage {
             if (result) {
                 // Successful decode
                 console.log("RESULT", result)
-                // Reset the decoder to stop the video
-                this.codeReader.reset()
-                // And process the scanned QR code
-                processQRpiece(result)
+                let qrType = detectQRtype(qrData)
+                if (qrType === QR_HC1) {
+                    // Reset the decoder to stop the video
+                    this.codeReader.reset()
+                    // And process the scanned QR code
+                    processQRpiece(result)
+                }
 
             }
             if (err && !(err instanceof NotFoundException)) {
