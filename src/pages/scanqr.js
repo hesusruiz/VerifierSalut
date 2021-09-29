@@ -38,12 +38,12 @@ export class ScanQrPage extends AbstractPage {
             if (result) {
                 // Successful decode
                 console.log("RESULT", result)
-                let qrType = detectQRtype(qrData)
-                if (qrType === QR_HC1) {
+                let result = processQRpiece(result)
+
+                if (result === true) {
                     // Reset the decoder to stop the video
                     this.codeReader.reset()
                     // And process the scanned QR code
-                    processQRpiece(result)
                 }
 
             }
@@ -77,17 +77,20 @@ async function processQRpiece(readerResult) {
     let qrData = readerResult.text
 
     let qrType = detectQRtype(qrData)
+    if (qrType === QR_HC1) {
+        return false;
+    }
 
     // Display data of a normal QR
     if (qrType === QR_UNKNOWN || qrType === QR_URL) {
         gotoPage("displayNormalQR", qrData)
-        return;
+        return true;
     }
 
     // Handle HCERT data
     if (qrType === QR_HC1) {
         gotoPage("displayhcert", qrData)
-        return;
+        return true;
     }
 
 }
