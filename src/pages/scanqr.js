@@ -77,7 +77,7 @@ async function processQRpiece(readerResult) {
     let qrData = readerResult.text
 
     let qrType = detectQRtype(qrData)
-    if (qrType === QR_HC1) {
+    if (qrType !== QR_HC1) {
         return false;
     }
 
