@@ -22,32 +22,6 @@ export class ScanQrPage extends AbstractPage {
 
     }
 
-    async selectCamera() {
-
-        // Get the stream with the appropriate constraints
-        let stream = undefined
-        // Avoid audio input for privacy reasons
-        const constraints = { audio: false, video: { facingMode: "environment" } }
-
-
-        try {
-            stream = await navigator.mediaDevices.getUserMedia(constraints);
-        } catch(err) {
-            return undefined;
-        }
-        if (stream === undefined) {
-            return undefined;
-        }
-        let mediaStreamTracks = stream.getVideoTracks();
-        console.log(mediaStreamTracks)
-
-
-        let videoInputDevices = await this.codeReader.listVideoInputDevices()
-        let cameraID = videoInputDevices[videoInputDevices.length - 1].deviceId
-
-        return cameraID
-    }
-
     async enter() {
 
         if (!navigator.mediaDevices || !navigator.mediaDevices.enumerateDevices) {
@@ -73,7 +47,7 @@ export class ScanQrPage extends AbstractPage {
         this.render(theHtml)
 
         // Select the most appropriate camera for scanning a QR, using some heuristics
-        this.cameraQR = await this.selectCamera()
+        this.cameraQR = videoInputDevices[videoInputDevices.length - 1].deviceId
 
         // Call the QR decoder using the video element just created
         // The decoder will choose the appropriate camera
