@@ -11,6 +11,7 @@ import { displayNormalQR } from "./pages/displayNormalQR";
 import { SelectLanguage } from "./i18n/i18";
 import { TermsOfUse } from './pages/termsofuse';
 import { PrivacyPolicy } from './pages/privacypolicy';
+import { SelectCamera } from './pages/selectcamera';
 
 export var pageDefs = [
     {
@@ -56,6 +57,10 @@ export var pageDefs = [
     {
         name: "privacyPolicy",
         className: PrivacyPolicy
+    },
+    {
+        name: "selectCamera",
+        className: SelectCamera
     },
 ]
 
