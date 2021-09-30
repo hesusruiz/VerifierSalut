@@ -542,6 +542,13 @@ async function getVideoDevices() {
 }
 
 async function getPreferredVideoDevice() {
+
+    // Select specific device only for Android devices
+    if ("Android" !== getPlatformOS()) {
+        return undefined;
+    }
+
+    // Get all video devices, front and back
     await getVideoDevices()
 
     if (window.backCameras.length > 0) {
