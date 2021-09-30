@@ -182,7 +182,7 @@ function initialHeader() {
     // `
     var initialHeader = `
     <div class="bar xlarge color-primary">
-        <div class="bar-item" style="color: white;padding:10px">VerificaCOVID.cat</div>
+        <div class="bar-item" onclick="resetAndGoHome()" style="color: white;padding:10px">VerificaCOVID.cat</div>
         <a href="javascript:void(0)" onclick="toggleMenu()" class="bar-item btn-menu right">&#9776;</a>
     </div>
 
