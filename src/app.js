@@ -169,9 +169,20 @@ window.resetAndGoHome = resetAndGoHome
 window.reloadPublickeys = reloadPublickeys
 
 function initialHeader() {
+    // var initialHeader = `
+    // <div class="bar xlarge color-primary">
+    //     <img style="padding:15px" onclick="resetAndGoHome()" href="javascript:void(0)" src=${logo} height="35px" alt="">
+    //     <a href="javascript:void(0)" onclick="toggleMenu()" class="bar-item btn-menu right">&#9776;</a>
+    // </div>
+
+    // <div class="w3-bar-block xlarge color-primary hide" id="mobileMenu">
+    //     <a onclick='reloadPublickeys()' href="javascript:void(0)" class="w3-bar-item w3-large btn-menu">${T("Update public keys")}</a>
+    //     <a onclick='gotoPage("selectLanguage")' href="javascript:void(0)" class="w3-bar-item w3-large btn-menu">${T("Language")}</a>
+    // </div>
+    // `
     var initialHeader = `
     <div class="bar xlarge color-primary">
-        <img style="padding:15px" onclick="resetAndGoHome()" href="javascript:void(0)" src=${logo} height="35px" alt="">
+        <div class="bar-item" style="color: white;padding:10px">VerificaCOVID.cat</div>
         <a href="javascript:void(0)" onclick="toggleMenu()" class="bar-item btn-menu right">&#9776;</a>
     </div>
 
