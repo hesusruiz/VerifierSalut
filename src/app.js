@@ -443,6 +443,7 @@ const backCameraKeywords = [
     "trás",
     "traseira",
     "posteriore",
+    "posterior",
     "后面",
     "後面",
     "背面",
