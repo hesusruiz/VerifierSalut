@@ -554,11 +554,11 @@ async function getPreferredVideoDevice() {
     if (window.backCameras.length > 0) {
         // Back cameras are ordered in inverse order of priority
         // Get the last back camera
-        return window.backCameras[window.backCameras.length - 1]
+        return window.backCameras[window.backCameras.length - 1].deviceId
     } else if (window.frontCameras.length > 0) {
         // Front cameras are ordered by priority
         // Get the first front camera
-        return window.frontCameras[0]
+        return window.frontCameras[0].deviceId
     } else {
         return undefined
     }
