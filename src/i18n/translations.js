@@ -24,7 +24,7 @@ export var translations = {
     "Verify another": {
         "es": "Verificar otro",
         "ca": "Verificar-ne un altre",
-        "fr": "Effectuer une autre vérification",
+        "fr": "Nouveau Scan",
         "de": "Ein weiteres überprüfen",
         "it": "Verifica un altro documento"
     },
@@ -138,6 +138,7 @@ export var translations = {
     "Vaccination not completed.": {
         "es": "Pauta de vacunación no completada.",
         "ca": "El calendari de vacunació no s'ha completat.",
+        "fr": "La vaccination n'est pas complete."
     },
     "Certificate is not yet valid as vaccination is too recent.": {
         "es": "Certificado no válido porque la vacunación es demasiado reciente.",
