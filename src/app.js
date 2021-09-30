@@ -289,9 +289,6 @@ function initialScreen() {
 
             </div>
         </div>
-        <div class="padding-16">
-            <p>${getPlatformOS()}</p>
-        </div>
 `;
 
     document.getElementById('intro').innerHTML = initialScreenHTML
